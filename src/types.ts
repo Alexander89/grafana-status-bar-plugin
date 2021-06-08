@@ -1,6 +1,7 @@
 export interface BarOptions {
-  text: string;
+  description: string;
   showName: boolean;
+  namesWidth: number;
   colors: ColorThresholds;
   defaultColor: string;
 }

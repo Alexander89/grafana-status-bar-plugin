@@ -14,19 +14,25 @@ export const plugin = new PanelPlugin<BarOptions>(StatusBarPanel).setPanelOption
       description: 'Thresholds to set color of section',
     })
     .addColorPicker({
-      name: 'default Color',
+      name: 'Default Color',
       path: 'defaultColor',
       description: 'color when no threshold is reached',
       defaultValue: '#aaaaaa',
-    })
-    .addTextInput({
-      path: 'text',
-      name: 'Description',
-      description: 'Description of panel option',
     })
     .addBooleanSwitch({
       path: 'showName',
       name: 'Show Names',
       description: 'Show the name of each bar',
+    })
+    .addNumberInput({
+      path: 'namesWidth',
+      name: 'Name width',
+      description: 'Empty space for the names',
+      showIf: c => c.showName,
+    })
+    .addTextInput({
+      path: 'description',
+      name: 'Description',
+      description: 'Description of panel option',
     })
 );

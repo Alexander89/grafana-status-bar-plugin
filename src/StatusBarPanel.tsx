@@ -12,9 +12,14 @@ type DrawData = {
   name: string;
 };
 
+type FieldData = {
+  name: string;
+  data: Field<number, Vector<number>>;
+};
+
 export const StatusBarPanel: React.FC<Props> = ({ options, data, width, height }) => {
   const styles = getStyles();
-  const { colors, defaultColor, showName } = options;
+  const { colors, defaultColor, showName, namesWidth } = options;
 
   const getColor = (value: number) => {
     const match = colors.find(rule => {
@@ -44,8 +49,9 @@ export const StatusBarPanel: React.FC<Props> = ({ options, data, width, height }
   const tToX = (t: number): number => ((t - from) / dT) * width;
 
   const valueData = data.series
-    .map(series => series.fields.find(fields => fields.type === 'number'))
-    .filter((s): s is Field<number, Vector<number>> => s !== undefined);
+    .map(series => ({ data: series.fields.find(fields => fields.type === 'number'), name: series.name || '' }))
+    .filter((s): s is FieldData => s !== undefined);
+
   const timeData = data.series
     .map(series => series.fields.find(fields => fields.type === 'time'))
     .filter((s): s is Field<number, Vector<number>> => s !== undefined)[0]
@@ -55,18 +61,19 @@ export const StatusBarPanel: React.FC<Props> = ({ options, data, width, height }
     return <div>no Data</div>;
   }
 
-  const availableHeight = options.text ? height - 20 : height;
-  const rowHeight = availableHeight / valueData.length;
-  console.log(valueData);
-  const drawData = valueData.map<DrawData>(fields => ({
-    data: timeData.map(tToX).map<SectionData>((x, idxT, timeArray) => ({
-      x,
-      color: getColor(fields.values.get(idxT)),
-      value: fields.values.get(idxT),
-      width: (timeArray[idxT + 1] || tToX(Date.now())) - x,
-    })),
-    name: data.series[0].name || '',
-  }));
+  const availableHeight = options.description ? height - 20 : height;
+  const rowHeight = availableHeight / valueData.length - 10;
+  const drawData = valueData
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map<DrawData>(fields => ({
+      data: timeData.map(tToX).map<SectionData>((x, idxT, timeArray) => ({
+        x,
+        color: getColor(fields.data.values.get(idxT)),
+        value: fields.data.values.get(idxT),
+        width: (timeArray[idxT + 1] || tToX(Date.now())) - x,
+      })),
+      name: fields.name,
+    }));
 
   return (
     <div
@@ -80,24 +87,24 @@ export const StatusBarPanel: React.FC<Props> = ({ options, data, width, height }
     >
       <div>
         {drawData.map(({ data, name }) => (
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', marginBottom: 10 }}>
             {showName && (
               <div
                 className={css`
-                  flex: 0 0 100px;
+                  flex: 0 0 ${namesWidth || 120}px;
                   align-self: center;
                 `}
               >
                 {name}
               </div>
             )}
-            <ColorBar data={data} height={rowHeight} width={width - (showName ? 100 : 0)} />
+            <ColorBar data={data} height={rowHeight} width={width - (showName ? namesWidth || 120 : 0)} />
           </div>
         ))}
       </div>
-      {options.text && (
+      {options.description && (
         <div className={styles.textBox}>
-          <div> {options.text}</div>
+          <div> {options.description}</div>
         </div>
       )}
     </div>
