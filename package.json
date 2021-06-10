@@ -1,6 +1,6 @@
 {
   "name": "alexander-89-status-bar",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "status bars",
   "scripts": {
     "build": "grafana-toolkit plugin:build",

@@ -24,7 +24,16 @@
         "url": "https://github.com/Alexander89/grafana-status-bar-plugin/blob/master/LICENSE"
       }
     ],
-    "screenshots": [],
+    "screenshots": [
+      {
+        "name": "Possible usage",
+        "path": "https://github.com/Alexander89/grafana-status-bar-plugin/blob/master/screenshot-2.png"
+      },
+      {
+        "name": "Configuration",
+        "path": "https://github.com/Alexander89/grafana-status-bar-plugin/blob/master/screenshot-1.png"
+      }
+    ],
     "version": "%VERSION%",
     "updated": "%TODAY%"
   },
